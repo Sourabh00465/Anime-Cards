@@ -16,7 +16,7 @@ pipeline {
             steps {
                 dir('hokage') {
                     bat 'mvn clean package -DskipTests'
-                    bat "docker build -t $DOCKER_REPO/anime-backend:latest ."
+                    bat "docker build -t %DOCKER_REPO%/anime-backend:latest ."
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline {
                 dir('anime-frontend') {
                     bat 'npm install'
                     bat 'npm run build'
-                    bat "docker build -t $DOCKER_REPO/anime-frontend:latest ."
+                    bat "docker build -t %DOCKER_REPO%/anime-frontend:latest ."
                 }
             }
         }
@@ -34,8 +34,8 @@ pipeline {
         stage('Push Images') {
             steps {
                 withDockerRegistry([credentialsId: 'dockerhub-creds', url: '']) {
-                    bat "docker push $DOCKER_REPO/anime-backend:latest"
-                    bat "docker push $DOCKER_REPO/anime-frontend:latest"
+                    bat "docker push %DOCKER_REPO%/anime-backend:latest"
+                    bat "docker push %DOCKER_REPO%/anime-frontend:latest"
                 }
             }
         }
