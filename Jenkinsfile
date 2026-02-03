@@ -15,8 +15,8 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('hokage') {
-                    sh 'mvn clean package -DskipTests'
-                    sh "docker build -t $DOCKER_REPO/anime-backend:latest ."
+                    bat 'mvn clean package -DskipTests'
+                    bat "docker build -t $DOCKER_REPO/anime-backend:latest ."
                 }
             }
         }
@@ -24,9 +24,9 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('anime-frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
-                    sh "docker build -t $DOCKER_REPO/anime-frontend:latest ."
+                    bat 'npm install'
+                    bat 'npm run build'
+                    bat "docker build -t $DOCKER_REPO/anime-frontend:latest ."
                 }
             }
         }
@@ -34,16 +34,16 @@ pipeline {
         stage('Push Images') {
             steps {
                 withDockerRegistry([credentialsId: 'dockerhub-creds', url: '']) {
-                    sh "docker push $DOCKER_REPO/anime-backend:latest"
-                    sh "docker push $DOCKER_REPO/anime-frontend:latest"
+                    bat "docker push $DOCKER_REPO/anime-backend:latest"
+                    bat "docker push $DOCKER_REPO/anime-frontend:latest"
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker-compose down'
-                sh 'docker-compose up -d'
+                bat 'docker-compose down'
+                bat 'docker-compose up -d'
             }
         }
     }
